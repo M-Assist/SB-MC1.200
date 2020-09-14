@@ -1,0 +1,112 @@
+/*
+ * **************************************************************************************
+ * *   Project objective:
+ * * Get IR codes, Take action when preferd code(s)  received.
+ * * Built upon the  the demo code that displays the IR code in the Serail monitor  
+ * * This code will turn on/off a LED or relay each time the correct button is pushed.
+ * * 
+ * *
+ * * IRremote: IRrecvDemo - demonstrates receiving IR codes with IRrecv
+ * * an IR detector/demodulator must be connected to the input RECV_PIN.
+ * * Version 0.1 July, 2009
+ * * Copyright 2009 Ken Shirriff
+ * * http://arcfn.com
+ * * ************************************************************************************
+ */
+
+#include <IRremote.h>
+
+int RECV_PIN = 11;        // D11 (set as input)receive pin D11 Connect IR receiver output
+//const int ledPin = 3;     // D3 (set as output) Connect relay/switch analog switch that is toggled
+                          // each time the specified remote control code is matched.
+                          
+/*                         
+    This Version  1-099 moves the ledPin from pin 3 to pin 6
+*/
+
+const int ledPin6 = 6;
+                  
+IRrecv irrecv(RECV_PIN);
+decode_results results;
+
+
+
+
+void setup()
+{
+  Serial.begin(9600);
+              // In case the interrupt driver crashes on setup, give a clue
+              // to the user what's going on.
+    Serial.println("Enabling IRin");
+    irrecv.enableIRIn(); // Start the receiver
+      Serial.println("Enabled IRin");
+
+             // Serial.println(digitalRead(ledPin6)); // show digital pin value before setting as output
+             // initialize the LED pin as an output:
+    pinMode(ledPin6, OUTPUT);  // or analog switch enable
+
+          Serial.println(digitalRead(ledPin6)); 
+         //  digitalWrite(ledPin6, !digitalRead(ledPin6));  // toggle state
+          // Serial.println(digitalRead(ledPin6)); 
+}
+
+
+void loop() {
+
+   
+   if (irrecv.decode(&results)) {
+     Serial.println(results.value, HEX);
+           Serial.println("decode and results");
+      // irrecv.decode.resume();
+    //Serial.println(irrecv.decode, HEX); 
+      //dumpCode(&results);   // Output the results as source code
+
+      //delay(50);
+      // Serial.println("delay 50");
+      
+   // if(results.value == 0xE0E0F00F) { //if the button press equals MUTE 0xE0E0F00F 
+   //    Serial.println("Have value specified ;");
+   //     Serial.println(digitalRead(ledPin6)); 
+        
+      Serial.println("---> start switch case");
+                Serial.println (results.value, HEX);
+                   /*  Code below here to check value and take action */
+  switch(results.value)  
+  {
+{
+     case 0xE0E0F00F:
+         Serial.println("Have 'CASE' value specified"), results;
+          Serial.println (results.value, HEX);
+          digitalWrite(ledPin6, !digitalRead(ledPin6));  // toggle state
+      Serial.println(digitalRead(ledPin6)); 
+          Serial.println("case 0 over");
+          break;
+
+    case 0xEFBE2D68:
+         Serial.println("case 1, Have 'D' value specified");
+          Serial.println (results.value, HEX);
+          digitalWrite(ledPin6, !digitalRead(ledPin6));  // toggle state
+           Serial.println("case 1 over");
+          break;
+          
+     default:
+          Serial.println("NO CASE MATCHED!");
+          break;
+  }
+   }
+        
+  delay(500);   // wait a little before going back to look for new code
+                //Serial.println("dely over next is resume");
+      Serial.println("Delay 500");;
+           Serial.println(results.value, HEX);"test";
+
+   
+   
+  //Serial.println("After Resume")
+    irrecv.resume(); 
+    
+ }
+          //receive the next value -- GO back to get next IR code
+          //Serial.println("got code going back to wait for another");
+{    
+}}
